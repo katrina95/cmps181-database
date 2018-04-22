@@ -1,0 +1,40 @@
+1. Basic information
+Team number:8
+Student ID of submitter: 1567104
+Student Name of submitter: Ziye Han
+Other Team Members: Wenting Zhu, Jiayi Yang
+
+
+2. Internal Record Format
+- Show your record format design and describe how your design satisfies O(1) field access. If not, just mention that you haven't implemented this feature.
+- Describe how you store a VarChar field.
+
+Record format design: we use variable-length fields with a directory following Lecture 3 slide #12.
+Record header(Field count) + null indicator field + directory(array of field offsets) + corresponding fields.
+
+Our design satisfies O(1) field access. You can directly access to the i'th field by calculating offsets using endPointer in directory and null indicators.
+
+For VarChar field, we read the first 4 bytes as an integer to get the length of current VarChar data. We track record_offset to find the position to put VarChar data.
+
+3. Page Format 
+- Show your page format design 
+We design page format following Lecture 3 slide 18.
+One side in page store records.
+Another side in page stores slot directory and header (the number of records in a page and offset to the start of free space). 
+Two variable-sized areas growing towards on another.
+
+
+4. Implementation Detail
+- Other implementation details goes here.
+We assume the size of SlotDirectoryHeader is less than 4KB.
+We define NumberOfColumnsSize and EachColumnLengthSize to unsigned 16-bit integer.
+We define slot directory entry to 4 bytes, and each slot is a tuple of (offset(uint16_t), length(uint16_t)).
+We try to find the page for insertion from the beginning through checking if the free space is still enough to insert the current record. If no page found, we create a new one.
+We do not include header page in file. 
+
+
+
+5. Other (optional)
+- Freely use this section to tell us about other things related to the project 1 (optional)
+We use valgrind for debugging and memory leak detection. 
+
